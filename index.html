@@ -3,33 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ALTO RIEGO</title>
+    <title>ALTO RIEGO - Dashboard</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="app.js"></script>
 </head>
 <body>
-    <!-- Login -->
-    <div id="login-container" class="login-container">
-        <h1>🌿 ALTO RIEGO</h1>
-        <p>Ingresa tu nombre de usuario</p>
-        <input type="text" id="username" placeholder="Nombre de usuario">
-        <button id="login-btn">Ingresar</button>
-        <p id="error-message" class="error"></p>
-    </div>
-
-    <!-- Dashboard (oculto inicialmente) -->
-    <div id="dashboard-container" class="dashboard" style="display: none;">
+    <div class="dashboard">
         <header>
             <h1>🌿 ALTO RIEGO</h1>
             <p class="status" id="status">⏳ Conectando...</p>
         </header>
 
         <main>
-            <!-- Dispositivo asignado -->
-            <p id="dispositivo">Usuario: <span id="username-display">--</span></p>
-
             <!-- Controles -->
             <section class="controls">
                 <button class="btn on-btn" onclick="publishCommand('ON')">💧 Encender Riego</button>
