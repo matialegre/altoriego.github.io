@@ -1,6 +1,11 @@
 // Obtener el nombre de usuario desde localStorage
 const username = localStorage.getItem("username");
-document.getElementById("username-display").innerText = username;
+if (!username) {
+    // Si no hay usuario, redirigir al login
+    window.location.href = "index.html";
+} else {
+    document.getElementById("username-display").innerText = username;
+}
 
 // Conectar a MQTT
 const brokerUrl = "wss://s6dfb2db.ala.us-east-1.emqxsl.com:8084/mqtt";
