@@ -33,6 +33,31 @@ header h1 {
     color: #FFD700;
 }
 
+/* Login */
+.login-container {
+    margin: 20px 0;
+}
+
+.login-container input {
+    width: 80%;
+    padding: 10px;
+    margin: 5px 0;
+    border: none;
+    border-radius: 5px;
+}
+
+.login-container button {
+    width: 85%;
+    padding: 10px;
+    margin-top: 10px;
+    background: #00FF84;
+    color: black;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
 /* Botones */
 .btn {
     width: 100%;
@@ -96,4 +121,42 @@ header h1 {
     background: white;
     padding: 10px;
     border-radius: 10px;
+}
+
+/* Chat */
+.chat-container {
+    margin-top: 20px;
+    padding: 15px;
+    background: #282A36;
+    border-radius: 8px;
+}
+
+.chat-messages {
+    height: 150px;
+    overflow-y: auto;
+    padding: 10px;
+    background: #373A47;
+    border-radius: 5px;
+}
+
+.chat-message {
+    padding: 5px;
+    margin-bottom: 5px;
+    border-bottom: 1px solid #555;
+}
+
+#chat-input {
+    width: 80%;
+    padding: 10px;
+    margin-right: 5px;
+}
+
+#send-btn {
+    width: 18%;
+    padding: 10px;
+    background: #00FF84;
+    color: black;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
 }
