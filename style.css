@@ -10,7 +10,7 @@ body {
     text-align: center;
 }
 
-/* Dashboard */
+/* Estructura del Dashboard */
 .dashboard {
     max-width: 500px;
     margin: 20px auto;
@@ -20,6 +20,7 @@ body {
     box-shadow: 0px 4px 15px rgba(0, 255, 132, 0.2);
 }
 
+/* Header */
 header h1 {
     font-size: 24px;
     font-weight: bold;
@@ -32,73 +33,67 @@ header h1 {
     color: #FFD700;
 }
 
-.controls .btn {
-    width: 48%;
-    padding: 10px;
-    margin: 5px;
-    background: #00FF84;
-    color: black;
+/* Botones */
+.btn {
+    width: 100%;
+    padding: 15px;
+    margin: 10px 0;
+    font-size: 1.2em;
     font-weight: bold;
     border: none;
+    border-radius: 8px;
     cursor: pointer;
-    border-radius: 5px;
+    transition: 0.3s;
+}
+
+.on-btn {
+    background: #00FF84;
+    color: #000;
+}
+
+.on-btn:hover {
+    background: #00CC6E;
+}
+
+.off-btn {
+    background: #FF4646;
+    color: white;
+}
+
+.off-btn:hover {
+    background: #CC3636;
+}
+
+/* Datos de Sensores */
+.data {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px 0;
 }
 
 .data-box {
-    display: inline-block;
-    width: 48%;
-    margin: 10px 0;
-    padding: 10px;
     background: #373A47;
-    border-radius: 5px;
+    padding: 15px;
+    border-radius: 8px;
+    width: 45%;
+    box-shadow: 0px 2px 10px rgba(255, 255, 255, 0.1);
+}
+
+.data-box h2 {
+    font-size: 14px;
+    margin: 0;
+    color: #BBB;
 }
 
 .data-value {
     font-size: 24px;
     font-weight: bold;
-    color: #00FF84;
+    margin-top: 5px;
 }
 
+/* Gráfico */
 .chart-container {
-    margin-top: 20px;
-    padding: 15px;
-    background: #373A47;
-    border-radius: 8px;
-}
-
-.chat-container {
-    margin-top: 20px;
-    padding: 15px;
-    background: #282A36;
-    border-radius: 8px;
-}
-
-.chat-messages {
-    height: 150px;
-    overflow-y: auto;
+    background: white;
     padding: 10px;
-    background: #373A47;
-    border-radius: 5px;
-}
-
-.chat-message {
-    padding: 5px;
-    margin-bottom: 5px;
-    border-bottom: 1px solid #555;
-}
-
-#chat-input {
-    width: 80%;
-    padding: 10px;
-    margin-right: 5px;
-}
-
-#send-btn {
-    width: 18%;
-    padding: 10px;
-    background: #00FF84;
-    color: black;
-    font-weight: bold;
-    border: none;
-    cursor: pointer;
+    border-radius: 10px;
 }
