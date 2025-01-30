@@ -10,49 +10,6 @@ body {
     text-align: center;
 }
 
-/* Login */
-.login-container {
-    max-width: 400px;
-    margin: 100px auto;
-    padding: 20px;
-    background: #282A36;
-    border-radius: 10px;
-    box-shadow: 0px 4px 15px rgba(0, 255, 132, 0.2);
-}
-
-.login-container h1 {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    color: #00FF84;
-}
-
-.login-container input {
-    width: 90%;
-    padding: 10px;
-    margin: 10px 0;
-    border: none;
-    border-radius: 5px;
-}
-
-.login-container button {
-    width: 95%;
-    padding: 10px;
-    margin-top: 10px;
-    background: #00FF84;
-    color: black;
-    font-weight: bold;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-.error {
-    color: #FF5555;
-    font-size: 14px;
-    margin-top: 10px;
-}
-
 /* Dashboard */
 .dashboard {
     max-width: 500px;
