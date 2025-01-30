@@ -3,14 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ALTO RIEGO - Dashboard</title>
+    <title>ALTO RIEGO</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="dashboard.js"></script>
+    <script src="app.js"></script>
 </head>
 <body>
-    <div class="dashboard">
+    <!-- Login -->
+    <div id="login-container" class="login-container">
+        <h1>🌿 ALTO RIEGO</h1>
+        <p>Ingresa tu nombre de usuario</p>
+        <input type="text" id="username" placeholder="Nombre de usuario">
+        <button id="login-btn">Ingresar</button>
+        <p id="error-message" class="error"></p>
+    </div>
+
+    <!-- Dashboard (oculto inicialmente) -->
+    <div id="dashboard-container" class="dashboard" style="display: none;">
         <header>
             <h1>🌿 ALTO RIEGO</h1>
             <p class="status" id="status">⏳ Conectando...</p>
