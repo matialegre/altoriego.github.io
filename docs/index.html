@@ -21,11 +21,24 @@
         </header>
 
         <main>
+            <!-- Login -->
+            <section class="login-container">
+                <input type="email" id="email" placeholder="Correo electrónico">
+                <input type="password" id="password" placeholder="Contraseña">
+                <button id="login-btn">Iniciar Sesión</button>
+                <p id="user-info"></p>
+            </section>
+
+            <!-- Dispositivo asignado -->
+            <p id="dispositivo">Dispositivo asignado: --</p>
+
+            <!-- Controles -->
             <section class="controls">
                 <button class="btn on-btn" onclick="publishCommand('ON')">💧 Encender Riego</button>
                 <button class="btn off-btn" onclick="publishCommand('OFF')">🛑 Apagar Riego</button>
             </section>
 
+            <!-- Datos de Sensores -->
             <section class="data">
                 <div class="data-box">
                     <h2>🌱 Humedad del Suelo</h2>
@@ -37,17 +50,20 @@
                 </div>
             </section>
 
+            <!-- Gráfico de Datos -->
             <section class="chart-container">
                 <canvas id="chartCanvas"></canvas>
             </section>
+
+            <!-- Chat en Vivo -->
+            <section class="chat-container">
+                <h2>💬 Chat en Vivo</h2>
+                <div id="chat-messages" class="chat-messages"></div>
+                <input type="text" id="chat-input" placeholder="Escribe un mensaje..." />
+                <button id="send-btn">Enviar</button>
+            </section>
         </main>
     </div>
-<div class="chat-container">
-    <h2>💬 Chat en Vivo</h2>
-    <div id="chat-messages" class="chat-messages"></div>
-    <input type="text" id="chat-input" placeholder="Escribe un mensaje..." />
-    <button id="send-btn">Enviar</button>
-</div>
 
     <!-- Enlace al JavaScript -->
     <script src="app.js"></script>
