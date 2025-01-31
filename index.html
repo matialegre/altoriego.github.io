@@ -33,18 +33,18 @@
 
         <main>
             <!-- Sección de Sensores -->
-            <section class="sensor-data">
-                <div class="data-card">
+            <section class="sensor-grid">
+                <div class="sensor-card">
                     <h2>💧 Humedad Suelo</h2>
-                    <p id="soilMoisture">--%</p>
+                    <p class="sensor-value" id="soilMoisture">--%</p>
                 </div>
-                <div class="data-card">
+                <div class="sensor-card">
                     <h2>🌡️ Temperatura</h2>
-                    <p id="airTemperature">--°C</p>
+                    <p class="sensor-value" id="airTemperature">--°C</p>
                 </div>
-                <div class="data-card">
+                <div class="sensor-card">
                     <h2>💦 Humedad Aire</h2>
-                    <p id="airHumidity">--%</p>
+                    <p class="sensor-value" id="airHumidity">--%</p>
                 </div>
             </section>
 
@@ -54,7 +54,7 @@
             </section>
 
             <!-- Controles -->
-            <section class="controls">
+            <section class="control-buttons">
                 <button class="btn on-btn" onclick="sendCommand('ON')">Encender Bomba</button>
                 <button class="btn off-btn" onclick="sendCommand('OFF')">Apagar Bomba</button>
             </section>
