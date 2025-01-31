@@ -1,142 +1,197 @@
-// Configuración MQTT
-const brokerUrl = "wss://s6dfb2db.ala.us-east-1.emqxsl.com:8084/mqtt";
-const username = "MATI";
-const password = "MATI";
+const MQTT_CONFIG = {
+    server: 'wss://s6dfb2db.ala.us-east-1.emqxsl.com:8084/mqtt',
+    options: {
+        username: 'MATI',
+        password: 'MATI',
+        clientId: 'webClient-' + Math.random().toString(16).substr(2, 8)
+    }
+};
 
-// Topics MQTT
-const topicChat = "alto_riego/chat";
-const topicPresence = "alto_riego/presence";
-
-// Configuración de usuarios
-const userDevices = {
-    "ale": "device1",
-    "leo": "device1",
-    "joako": "device1",
-    "chuba": "device1",
-    "gordo": "device1",
-    "juan": "device1",
-    "mati": "device1",
-    "lina": "device1",
-    "seba": "device1",
-    "jeta": "device1"
+const USER_DEVICES = {
+    "ale": "device1", "leo": "device1", "joako": "device1",
+    "chuba": "device1", "gordo": "device1", "juan": "device1",
+    "mati": "device1", "lina": "device1", "seba": "device1", "jeta": "device1"
 };
 
 let currentUser = null;
-let client = null;
+let mqttClient = null;
 let chart = null;
 
-// Sistema de Login
+// Inicialización
 document.getElementById('loginForm').addEventListener('submit', function(e) {
     e.preventDefault();
-    const inputUser = document.getElementById('username').value.trim().toLowerCase();
+    const username = document.getElementById('username').value.trim().toLowerCase();
     
-    if (userDevices[inputUser]) {
-        currentUser = inputUser;
-        localStorage.setItem('currentUser', currentUser);
+    if (USER_DEVICES[username]) {
+        currentUser = username;
+        localStorage.setItem('currentUser', username);
         initDashboard();
     } else {
-        alert('Usuario no registrado');
+        alert('Usuario no válido. Verifica las opciones en el mensaje de bienvenida.');
     }
 });
 
-function logout() {
-    if (client) {
-        publishPresence('offline');
-        client.end();
-    }
-    localStorage.removeItem('currentUser');
-    location.reload();
-}
-
-// Inicialización del Dashboard
 function initDashboard() {
+    // Ocultar login y mostrar dashboard
     document.getElementById('loginContainer').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';
     document.getElementById('currentUser').textContent = currentUser;
 
     // Conectar a MQTT
-    connectMQTT();
-}
-
-// Conexión MQTT
-function connectMQTT() {
-    client = mqtt.connect(brokerUrl, { username, password });
-
-    client.on("connect", () => {
-        console.log("✅ Conectado a MQTT");
-        document.getElementById("status").innerText = "✅ Conectado";
-
-        client.subscribe(topicChat);
-        client.subscribe(topicPresence);
+    mqttClient = mqtt.connect(MQTT_CONFIG.server, MQTT_CONFIG.options);
+    
+    mqttClient.on('connect', () => {
+        console.log('Conectado a MQTT');
+        document.getElementById('status').textContent = 'Estado: Conectado ✅';
         
-        publishPresence('online');
+        // Suscribirse a tópicos
+        const deviceId = USER_DEVICES[currentUser];
+        mqttClient.subscribe(`devices/${deviceId}/data`);
+        mqttClient.subscribe('alto_riego/presence');
+        mqttClient.subscribe('alto_riego/chat');
+        
+        // Publicar presencia
+        mqttClient.publish('alto_riego/presence', JSON.stringify({
+            user: currentUser,
+            status: 'online',
+            timestamp: new Date().toISOString()
+        }));
     });
 
-    client.on("message", (topic, message) => {
-        if (topic === topicChat) {
-            displayChatMessage(JSON.parse(message));
-        } else if (topic === topicPresence) {
-            updateUserStatus(JSON.parse(message));
+    // Manejar mensajes MQTT
+    mqttClient.on('message', (topic, message) => {
+        const data = JSON.parse(message.toString());
+        
+        if (topic.includes('data')) {
+            updateSensorData(data);
+        } else if (topic === 'alto_riego/presence') {
+            updateUserPresence(data);
+        } else if (topic === 'alto_riego/chat') {
+            updateChat(data);
+        }
+    });
+
+    // Inicializar gráfico
+    initChart();
+}
+
+function updateSensorData(data) {
+    document.getElementById('soilMoisture').textContent = `${data.soilMoisture.toFixed(1)}%`;
+    document.getElementById('airTemperature').textContent = `${data.airTemperature.toFixed(1)}°C`;
+    document.getElementById('airHumidity').textContent = `${data.airHumidity.toFixed(1)}%`;
+    
+    // Actualizar gráfico
+    const time = new Date().toLocaleTimeString();
+    chart.data.labels.push(time);
+    chart.data.datasets[0].data.push(data.soilMoisture);
+    chart.data.datasets[1].data.push(data.airTemperature);
+    
+    if (chart.data.labels.length > 15) {
+        chart.data.labels.shift();
+        chart.data.datasets.forEach(dataset => dataset.data.shift());
+    }
+    
+    chart.update();
+}
+
+function initChart() {
+    const ctx = document.getElementById('sensorChart').getContext('2d');
+    chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Humedad del Suelo (%)',
+                data: [],
+                borderColor: '#00FF84',
+                backgroundColor: 'rgba(0, 255, 132, 0.1)',
+                tension: 0.3
+            }, {
+                label: 'Temperatura (°C)',
+                data: [],
+                borderColor: '#FFA500',
+                backgroundColor: 'rgba(255, 165, 0, 0.1)',
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
         }
     });
 }
 
-// Publicar estado de presencia
-function publishPresence(status) {
-    const message = JSON.stringify({
-        user: currentUser,
-        status: status,
-        timestamp: new Date().toISOString()
-    });
-    client.publish(topicPresence, message);
+// Funciones de Chat y Presencia
+function updateUserPresence(data) {
+    const userList = document.getElementById('userList');
+    const existingUser = Array.from(userList.children).find(el => el.dataset.user === data.user);
+    
+    if (data.status === 'online') {
+        if (!existingUser) {
+            const userEl = document.createElement('div');
+            userEl.dataset.user = data.user;
+            userEl.innerHTML = `${data.user} 🟢`;
+            userList.appendChild(userEl);
+        }
+    } else {
+        if (existingUser) existingUser.remove();
+    }
+    
+    document.getElementById('onlineCount').textContent = userList.children.length;
 }
 
-// Enviar mensaje de chat
+function updateChat(data) {
+    const chatBox = document.getElementById('chatMessages');
+    const messageEl = document.createElement('div');
+    messageEl.classList.add('message');
+    messageEl.innerHTML = `
+        <strong>${data.user}:</strong> ${data.message}
+        <span class="timestamp">${new Date(data.timestamp).toLocaleTimeString()}</span>
+    `;
+    chatBox.appendChild(messageEl);
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
 function sendMessage() {
     const input = document.getElementById('chatInput');
     const message = input.value.trim();
     
     if (message) {
-        const payload = JSON.stringify({
+        mqttClient.publish('alto_riego/chat', JSON.stringify({
             user: currentUser,
             message: message,
             timestamp: new Date().toISOString()
-        });
-        client.publish(topicChat, payload);
+        }));
         input.value = '';
     }
 }
 
-// Mostrar mensajes en el chat
-function displayChatMessage(data) {
-    const chatMessages = document.getElementById('chatMessages');
-    chatMessages.innerHTML += `
-        <div class="message">
-            <strong>${data.user}:</strong> ${data.message}
-            <span class="timestamp">${new Date(data.timestamp).toLocaleTimeString()}</span>
-        </div>
-    `;
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+function sendCommand(command) {
+    const deviceId = USER_DEVICES[currentUser];
+    mqttClient.publish(`devices/${deviceId}/commands`, command);
 }
 
-// Actualizar lista de usuarios conectados
-function updateUserStatus(data) {
-    const userList = document.getElementById('userList');
-
-    if (data.status === 'online') {
-        userList.innerHTML += `<div class="user-online">${data.user} 🟢</div>`;
-    } else {
-        const userElement = Array.from(userList.children).find(el => el.textContent.includes(data.user));
-        if (userElement) userElement.remove();
-    }
-
-    document.getElementById('onlineCount').textContent = document.querySelectorAll('.user-online').length;
+function logout() {
+    mqttClient.publish('alto_riego/presence', JSON.stringify({
+        user: currentUser,
+        status: 'offline',
+        timestamp: new Date().toISOString()
+    }));
+    
+    mqttClient.end();
+    localStorage.removeItem('currentUser');
+    location.reload();
 }
 
 // Cargar usuario al iniciar
 window.onload = () => {
     const savedUser = localStorage.getItem('currentUser');
-    if (savedUser && userDevices[savedUser]) {
+    if (savedUser && USER_DEVICES[savedUser]) {
         currentUser = savedUser;
         initDashboard();
     }
