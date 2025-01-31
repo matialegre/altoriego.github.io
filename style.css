@@ -121,3 +121,22 @@ header {
     border-radius: 10px;
     margin-top: 20px;
 }
+
+.welcome-message {
+    background: #373A47;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.welcome-message h3 {
+    color: #00FF84;
+    margin: 0 0 10px 0;
+}
+
+.welcome-message p {
+    color: #BBB;
+    font-size: 14px;
+    margin: 0;
+}
