@@ -4,10 +4,27 @@ const username = "MATI";
 const password = "MATI";
 
 // Configuración de usuarios
+// Configuración de usuarios
 const userDevices = {
+    "ale": "device1",
+    "leo": "device1",
+    "joako": "device1",
+    "chuba": "device1",
+    "gordo": "device1",
+    "juan": "device1",
     "mati": "device1",
-    "juaco": "device2"
+    "lina": "device1",
+    "seba": "device1",
+    "jeta": "device1"
 };
+
+// Mensaje de bienvenida en el login
+document.getElementById('loginForm').insertAdjacentHTML('afterbegin', `
+    <div class="welcome-message">
+        <h3>👋 ¡Bienvenido!</h3>
+        <p>Usuarios válidos: ale, leo, joako, chuba, gordo, juan, mati, lina, seba, jeta</p>
+    </div>
+`);
 
 let currentUser = null;
 let client = null;
