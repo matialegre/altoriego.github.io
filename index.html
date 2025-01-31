@@ -3,65 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ALTO RIEGO - Dashboard</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Alto Riego - Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <!-- Login Container -->
     <div class="login-container" id="loginContainer">
         <div class="login-box">
-            <h2>🔒 Login</h2>
+            <div class="welcome-message">
+                <h3>👋 ¡Bienvenido!</h3>
+                <p>Usuarios válidos: ale, leo, joako, chuba, gordo, juan, mati, lina, seba, jeta</p>
+            </div>
             <form id="loginForm">
-                <input type="text" id="username" placeholder="Nombre de usuario" required>
-                <button type="submit" class="btn on-btn">Ingresar</button>
+                <input type="text" id="username" placeholder="Tu nombre de invitado" required>
+                <button type="submit" class="btn login-btn">Ingresar</button>
             </form>
         </div>
     </div>
 
-    <!-- Dashboard (oculto inicialmente) -->
     <div class="dashboard" id="dashboard">
         <header>
-            <h1>🌿 ALTO RIEGO - <span id="currentUser"></span></h1>
-            <p class="status" id="status">⏳ Conectando...</p>
-            <button class="btn off-btn" onclick="logout()">Cerrar sesión</button>
+            <h1>🌿 Alto Riego - <span id="currentUser"></span></h1>
+            <div class="status-bar">
+                <span id="status">Estado: Conectando...</span>
+                <button class="btn logout-btn" onclick="logout()">Cerrar sesión</button>
+            </div>
         </header>
 
         <main>
-            <section class="controls">
-                <button class="btn on-btn" onclick="publishCommand('ON')">💧 Encender Riego</button>
-                <button class="btn off-btn" onclick="publishCommand('OFF')">🛑 Apagar Riego</button>
-            </section>
-
-            <section class="data">
-                <div class="data-box">
-                    <h2>🌱 Humedad del Suelo</h2>
-                    <p id="humedad" class="data-value">-- %</p>
+            <!-- Sección de Sensores -->
+            <section class="sensor-data">
+                <div class="data-card">
+                    <h2>💧 Humedad Suelo</h2>
+                    <p id="soilMoisture">--%</p>
                 </div>
-                <div class="data-box">
+                <div class="data-card">
                     <h2>🌡️ Temperatura</h2>
-                    <p id="temperatura" class="data-value">-- °C</p>
+                    <p id="airTemperature">--°C</p>
+                </div>
+                <div class="data-card">
+                    <h2>💦 Humedad Aire</h2>
+                    <p id="airHumidity">--%</p>
                 </div>
             </section>
 
+            <!-- Gráfico -->
             <section class="chart-container">
-                <canvas id="chartCanvas"></canvas>
+                <canvas id="sensorChart"></canvas>
             </section>
 
-            <!-- Chat y Estado de Usuarios -->
-            <section class="chat-section">
-                <h2>💬 Chat & Estado</h2>
+            <!-- Controles -->
+            <section class="controls">
+                <button class="btn on-btn" onclick="sendCommand('ON')">Encender Bomba</button>
+                <button class="btn off-btn" onclick="sendCommand('OFF')">Apagar Bomba</button>
+            </section>
 
+            <!-- Chat y Usuarios -->
+            <section class="social-section">
                 <div class="online-users">
-                    <h3>Usuarios Conectados (<span id="onlineCount">0</span>)</h3>
+                    <h3>👥 Conectados (<span id="onlineCount">0</span>)</h3>
                     <div id="userList"></div>
                 </div>
-
+                
                 <div class="chat-box">
                     <div id="chatMessages"></div>
                     <input type="text" id="chatInput" placeholder="Escribe un mensaje...">
-                    <button class="btn on-btn" onclick="sendMessage()">Enviar</button>
+                    <button class="btn chat-btn" onclick="sendMessage()">Enviar</button>
                 </div>
             </section>
         </main>
