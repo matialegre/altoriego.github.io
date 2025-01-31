@@ -9,7 +9,7 @@ const MQTT_CONFIG = {
 
 const USER_DEVICES = {
     "ale": "device1", "leo": "device1", "joako": "device1",
-    "chuba": "device1", "gordo": "device1", "juan": "device1",
+    "chuba": "device1", "gordo": "device2", "juan": "device1",
     "mati": "device1", "lina": "device1", "seba": "device1", "jeta": "device1"
 };
 
