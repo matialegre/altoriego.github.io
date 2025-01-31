@@ -48,6 +48,22 @@
             <section class="chart-container">
                 <canvas id="chartCanvas"></canvas>
             </section>
+
+            <!-- Chat y Estado de Usuarios -->
+            <section class="chat-section">
+                <h2>💬 Chat & Estado</h2>
+
+                <div class="online-users">
+                    <h3>Usuarios Conectados (<span id="onlineCount">0</span>)</h3>
+                    <div id="userList"></div>
+                </div>
+
+                <div class="chat-box">
+                    <div id="chatMessages"></div>
+                    <input type="text" id="chatInput" placeholder="Escribe un mensaje...">
+                    <button class="btn on-btn" onclick="sendMessage()">Enviar</button>
+                </div>
+            </section>
         </main>
     </div>
 
