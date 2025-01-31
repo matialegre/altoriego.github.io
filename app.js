@@ -3,7 +3,10 @@ const brokerUrl = "wss://s6dfb2db.ala.us-east-1.emqxsl.com:8084/mqtt";
 const username = "MATI";
 const password = "MATI";
 
-// Configuración de usuarios
+// Topics MQTT
+const topicChat = "alto_riego/chat";
+const topicPresence = "alto_riego/presence";
+
 // Configuración de usuarios
 const userDevices = {
     "ale": "device1",
@@ -17,14 +20,6 @@ const userDevices = {
     "seba": "device1",
     "jeta": "device1"
 };
-
-// Mensaje de bienvenida en el login
-document.getElementById('loginForm').insertAdjacentHTML('afterbegin', `
-    <div class="welcome-message">
-        <h3>👋 ¡Bienvenido!</h3>
-        <p>Usuarios válidos: ale, leo, joako, chuba, gordo, juan, mati, lina, seba, jeta</p>
-    </div>
-`);
 
 let currentUser = null;
 let client = null;
@@ -45,7 +40,10 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
 });
 
 function logout() {
-    if (client) client.end();
+    if (client) {
+        publishPresence('offline');
+        client.end();
+    }
     localStorage.removeItem('currentUser');
     location.reload();
 }
@@ -56,86 +54,83 @@ function initDashboard() {
     document.getElementById('dashboard').style.display = 'block';
     document.getElementById('currentUser').textContent = currentUser;
 
-    // Configurar topics dinámicos
-    const deviceId = userDevices[currentUser];
-    const topicData = `devices/${deviceId}/data`;
-    const topicCommand = `devices/${deviceId}/commands`;
-
-    // Inicializar gráfico
-    initChart();
-    
     // Conectar a MQTT
-    connectMQTT(topicData, topicCommand);
+    connectMQTT();
 }
 
-function initChart() {
-    const ctx = document.getElementById('chartCanvas').getContext('2d');
-    chart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: [],
-            datasets: [{
-                label: 'Humedad del Suelo (%)',
-                data: [],
-                borderColor: '#00FF84',
-                backgroundColor: 'rgba(0, 255, 132, 0.2)',
-                borderWidth: 2,
-                fill: true
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    suggestedMin: 0,
-                    suggestedMax: 100
-                }
-            }
-        }
-    });
-}
-
-function connectMQTT(topicData, topicCommand) {
+// Conexión MQTT
+function connectMQTT() {
     client = mqtt.connect(brokerUrl, { username, password });
 
     client.on("connect", () => {
         console.log("✅ Conectado a MQTT");
-        client.subscribe(topicData);
         document.getElementById("status").innerText = "✅ Conectado";
+
+        client.subscribe(topicChat);
+        client.subscribe(topicPresence);
+        
+        publishPresence('online');
     });
 
     client.on("message", (topic, message) => {
-        if (topic === topicData) {
-            const data = JSON.parse(message);
-            updateDashboard(data);
+        if (topic === topicChat) {
+            displayChatMessage(JSON.parse(message));
+        } else if (topic === topicPresence) {
+            updateUserStatus(JSON.parse(message));
         }
     });
 }
 
-function updateDashboard(data) {
-    document.getElementById("humedad").textContent = `${data.soilMoisture} %`;
-    document.getElementById("temperatura").textContent = `${data.airTemperature} °C`;
-
-    // Actualizar gráfico
-    chart.data.labels.push(new Date().toLocaleTimeString());
-    chart.data.datasets[0].data.push(data.soilMoisture);
-    
-    if (chart.data.labels.length > 20) {
-        chart.data.labels.shift();
-        chart.data.datasets[0].data.shift();
-    }
-    
-    chart.update();
+// Publicar estado de presencia
+function publishPresence(status) {
+    const message = JSON.stringify({
+        user: currentUser,
+        status: status,
+        timestamp: new Date().toISOString()
+    });
+    client.publish(topicPresence, message);
 }
 
-function publishCommand(command) {
-    const deviceId = userDevices[currentUser];
-    const topicCommand = `devices/${deviceId}/commands`;
-    client.publish(topicCommand, command);
-    document.getElementById("status").innerText = command === "ON" 
-        ? "💧 Riego ACTIVADO" 
-        : "🛑 Riego DESACTIVADO";
+// Enviar mensaje de chat
+function sendMessage() {
+    const input = document.getElementById('chatInput');
+    const message = input.value.trim();
+    
+    if (message) {
+        const payload = JSON.stringify({
+            user: currentUser,
+            message: message,
+            timestamp: new Date().toISOString()
+        });
+        client.publish(topicChat, payload);
+        input.value = '';
+    }
+}
+
+// Mostrar mensajes en el chat
+function displayChatMessage(data) {
+    const chatMessages = document.getElementById('chatMessages');
+    chatMessages.innerHTML += `
+        <div class="message">
+            <strong>${data.user}:</strong> ${data.message}
+            <span class="timestamp">${new Date(data.timestamp).toLocaleTimeString()}</span>
+        </div>
+    `;
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+// Actualizar lista de usuarios conectados
+function updateUserStatus(data) {
+    const userList = document.getElementById('userList');
+
+    if (data.status === 'online') {
+        userList.innerHTML += `<div class="user-online">${data.user} 🟢</div>`;
+    } else {
+        const userElement = Array.from(userList.children).find(el => el.textContent.includes(data.user));
+        if (userElement) userElement.remove();
+    }
+
+    document.getElementById('onlineCount').textContent = document.querySelectorAll('.user-online').length;
 }
 
 // Cargar usuario al iniciar
