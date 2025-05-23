@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALTO RIEGO - Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="dashboard.js"></script>
+</head>
+<body>
+    <div class="dashboard">
+        <header>
+            <h1>🌿 ALTO RIEGO</h1>
+            <p class="status" id="status">⏳ Conectando...</p>
+        </header>
+
+        <main>
+            <!-- Dispositivo asignado -->
+            <p id="dispositivo">Usuario: <span id="username-display">--</span></p>
+
+            <!-- Controles -->
+            <section class="controls">
+                <button class="btn on-btn" onclick="publishCommand('ON')">💧 Encender Riego</button>
+                <button class="btn off-btn" onclick="publishCommand('OFF')">🛑 Apagar Riego</button>
+            </section>
+
+            <!-- Datos de Sensores -->
+            <section class="data">
+                <div class="data-box">
+                    <h2>🌱 Humedad del Suelo</h2>
+                    <p id="humedad" class="data-value">-- %</p>
+                </div>
+                <div class="data-box">
+                    <h2>🌡️ Temperatura</h2>
+                    <p id="temperatura" class="data-value">-- °C</p>
+                </div>
+            </section>
+
+            <!-- Gráfico de Datos -->
+            <section class="chart-container">
+                <canvas id="chartCanvas"></canvas>
+            </section>
+
+            <!-- Chat en Vivo -->
+            <section class="chat-container">
+                <h2>💬 Chat en Vivo</h2>
+                <div id="chat-messages" class="chat-messages"></div>
+                <input type="text" id="chat-input" placeholder="Escribe un mensaje..." />
+                <button id="send-btn">Enviar</button>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alto Riego - Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="login-container" id="loginContainer">
+        <div class="login-box">
+            <div class="welcome-message">
+                <h3>👋 ¡Bienvenido!</h3>
+                <p>Usuarios válidos: ale, leo, joako, chuba, gordo, juan, mati, lina, seba, jeta</p>
+            </div>
+            <form id="loginForm">
+                <input type="text" id="username" placeholder="Tu nombre de invitado" required>
+                <button type="submit" class="btn login-btn">Ingresar</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="dashboard" id="dashboard">
+        <header>
+            <h1>🌿 Alto Riego - <span id="currentUser"></span></h1>
+            <div class="status-bar">
+                <span id="status">Estado: Conectando...</span>
+                <button class="btn logout-btn" onclick="logout()">Cerrar sesión</button>
+            </div>
+        </header>
+
+        <main>
+            <!-- Sección de Sensores -->
+            <section class="sensor-grid">
+                <div class="sensor-card">
+                    <h2>💧 Humedad Suelo</h2>
+                    <p class="sensor-value" id="soilMoisture">--%</p>
+                </div>
+                <div class="sensor-card">
+                    <h2>🌡️ Temperatura</h2>
+                    <p class="sensor-value" id="airTemperature">--°C</p>
+                </div>
+                <div class="sensor-card">
+                    <h2>💦 Humedad Aire</h2>
+                    <p class="sensor-value" id="airHumidity">--%</p>
+                </div>
+            </section>
+
+            <!-- Gráfico -->
+            <section class="chart-container">
+                <canvas id="sensorChart"></canvas>
+            </section>
+
+            <!-- Controles -->
+            <section class="control-buttons">
+                <button class="btn on-btn" onclick="sendCommand('ON')">Encender Bomba</button>
+                <button class="btn off-btn" onclick="sendCommand('OFF')">Apagar Bomba</button>
+            </section>
+
+            <!-- Chat y Usuarios -->
+            <section class="social-section">
+                <div class="online-users">
+                    <h3>👥 Conectados (<span id="onlineCount">0</span>)</h3>
+                    <div id="userList"></div>
+                </div>
+                
+                <div class="chat-box">
+                    <div id="chatMessages"></div>
+                    <input type="text" id="chatInput" placeholder="Escribe un mensaje...">
+                    <button class="btn chat-btn" onclick="sendMessage()">Enviar</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
