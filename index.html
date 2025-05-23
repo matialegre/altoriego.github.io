@@ -18,8 +18,9 @@
     <div style="font-size:1.1em;margin-bottom:6px;">Desarrollado por <b>T4 Electronics</b> - Bahía Blanca</div>
     <div style="font-size:1.05em;margin-bottom:6px;">Dashboard de Monitoreo de Temperatura de Alimentos</div>
     <div style="font-size:0.98em;margin-bottom:10px;">Usuarios válidos: <b>gonza, berna, jere, mati</b></div>
-                <h3>👋 ¡Bienvenido!</h3>
-                <p>Usuarios válidos: ale, leo, joako, chuba, gordo, juan, mati, lina, seba, jeta</p>
+                <h3 style="color:#0f0;font-weight:bold;">👋 ¡Bienvenido!</h3>
+<div style="color:#0f0;font-size:1em;font-weight:bold;">T4 Electronics - Bahía Blanca</div>
+                <p>Usuarios válidos: gonza, berna, jere, mati</p>
             </div>
             <form id="loginForm">
                 <input type="text" id="username" placeholder="Tu nombre de invitado" required>
@@ -49,6 +50,7 @@
                     <input type="range" id="temp-threshold" min="0" max="50" value="30" step="0.5" style="width:160px;vertical-align:middle;margin:0 10px;">
                     <span id="temp-threshold-value" style="color:#fff;font-weight:bold;">30°C</span>
                     <button id="enable-push" style="margin-left:20px;">Habilitar Notificaciones PUSH</button>
+<button id="test-push" style="margin-left:10px;background:#007bff;color:#fff;">Probar Notificación PUSH</button>
                 </div>
             </section>
 
@@ -59,8 +61,8 @@
 
             <!-- Controles -->
             <section class="control-buttons">
-                <button class="btn on-btn" onclick="sendCommand('ON')">Encender Bomba</button>
-                <button class="btn off-btn" onclick="sendCommand('OFF')">Apagar Bomba</button>
+                <button class="btn on-btn" onclick="sendCommand('ON')">Encender Generador</button>
+                <button class="btn off-btn" onclick="sendCommand('OFF')">Apagar Generador</button>
             </section>
 
             <!-- Chat y Usuarios -->
