@@ -15,6 +15,9 @@
     <div class="login-container" id="loginContainer">
         <div class="login-box">
             <div class="welcome-message">
+    <div style="font-size:1.1em;margin-bottom:6px;">Desarrollado por <b>T4 Electronics</b> - Bahía Blanca</div>
+    <div style="font-size:1.05em;margin-bottom:6px;">Dashboard de Monitoreo de Temperatura de Alimentos</div>
+    <div style="font-size:0.98em;margin-bottom:10px;">Usuarios válidos: <b>gonza, berna, jere, mati</b></div>
                 <h3>👋 ¡Bienvenido!</h3>
                 <p>Usuarios válidos: ale, leo, joako, chuba, gordo, juan, mati, lina, seba, jeta</p>
             </div>
@@ -37,17 +40,15 @@
         <main>
             <!-- Sección de Sensores -->
             <section class="sensor-grid">
-                <div class="sensor-card">
-                    <h2>💧 Humedad Suelo</h2>
-                    <p class="sensor-value" id="soilMoisture">--%</p>
+                <div class="sensor-box" style="width:100%;">
+                    <div class="sensor-title">🌡️ Temperatura</div>
+                    <div id="airTemperature" class="sensor-value">--°C</div>
                 </div>
-                <div class="sensor-card">
-                    <h2>🌡️ Temperatura</h2>
-                    <p class="sensor-value" id="airTemperature">--°C</p>
-                </div>
-                <div class="sensor-card">
-                    <h2>💦 Humedad Aire</h2>
-                    <p class="sensor-value" id="airHumidity">--%</p>
+                <div style="margin:18px 0 8px 0;">
+                    <label for="temp-threshold" style="color:#fff;font-size:1em;">Notificar si temperatura supera:</label>
+                    <input type="range" id="temp-threshold" min="0" max="50" value="30" step="0.5" style="width:160px;vertical-align:middle;margin:0 10px;">
+                    <span id="temp-threshold-value" style="color:#fff;font-weight:bold;">30°C</span>
+                    <button id="enable-push" style="margin-left:20px;">Habilitar Notificaciones PUSH</button>
                 </div>
             </section>
 
@@ -79,5 +80,8 @@
     </div>
 
     <script src="app.js"></script>
+</body>
+</html>
+
 </body>
 </html>

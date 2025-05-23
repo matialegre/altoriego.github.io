@@ -9,14 +9,46 @@ const MQTT_CONFIG = {
 };
 
 const USER_DEVICES = {
-    "ale": "device1", "leo": "device1", "joako": "device1",
-    "chuba": "device1", "gordo": "device2", "juan": "device1",
-    "mati": "device1", "lina": "device1", "seba": "device1", "jeta": "device1"
+    "gonza": "device1",
+    "berna": "device1",
+    "jere": "device1",
+    "mati": "device1"
 };
 
 let currentUser = null;
 let mqttClient = null;
 let chart = null;
+let tempThreshold = 30;
+let pushEnabled = false;
+
+// Slider para umbral de temperatura
+window.addEventListener('DOMContentLoaded', () => {
+    const slider = document.getElementById('temp-threshold');
+    const value = document.getElementById('temp-threshold-value');
+    if (slider && value) {
+        slider.addEventListener('input', (e) => {
+            tempThreshold = parseFloat(slider.value);
+            value.textContent = tempThreshold + '°C';
+        });
+        value.textContent = slider.value + '°C';
+    }
+    const pushBtn = document.getElementById('enable-push');
+    if (pushBtn) {
+        pushBtn.onclick = () => {
+            if (Notification && Notification.permission !== 'granted') {
+                Notification.requestPermission().then(p => {
+                    if (p === 'granted') {
+                        pushEnabled = true;
+                        alert('Notificaciones PUSH habilitadas');
+                    }
+                });
+            } else {
+                pushEnabled = true;
+                alert('Notificaciones PUSH habilitadas');
+            }
+        };
+    }
+});
 
 // Inicialización
 document.getElementById('loginForm').addEventListener('submit', function(e) {
@@ -77,21 +109,26 @@ function initDashboard() {
 }
 
 function updateSensorData(data) {
-    document.getElementById('soilMoisture').textContent = `${data.soilMoisture.toFixed(1)}%`;
-    document.getElementById('airTemperature').textContent = `${data.airTemperature.toFixed(1)}°C`;
-    document.getElementById('airHumidity').textContent = `${data.airHumidity.toFixed(1)}%`;
-    
-    // Actualizar gráfico
+    const temp = data.airTemperature;
+    document.getElementById('airTemperature').textContent = `${temp.toFixed(1)}°C`;
+
+    // Notificación PUSH si supera umbral
+    if (pushEnabled && temp > tempThreshold) {
+        if (Notification && Notification.permission === 'granted') {
+            new Notification('¡Alerta de Temperatura!', {
+                body: `La temperatura superó el umbral de ${tempThreshold}°C. Actual: ${temp}°C`,
+                icon: 'LOGOT4.png'
+            });
+        }
+    }
+    // Actualizar gráfico solo temperatura
     const time = new Date().toLocaleTimeString();
     chart.data.labels.push(time);
-    chart.data.datasets[0].data.push(data.soilMoisture);
-    chart.data.datasets[1].data.push(data.airTemperature);
-    
+    chart.data.datasets[0].data.push(temp);
     if (chart.data.labels.length > 15) {
         chart.data.labels.shift();
-        chart.data.datasets.forEach(dataset => dataset.data.shift());
+        chart.data.datasets[0].data.shift();
     }
-    
     chart.update();
 }
 
