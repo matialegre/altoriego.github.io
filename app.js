@@ -1,10 +1,11 @@
 const MQTT_CONFIG = {
-    server: 'wss://s6dfb2db.ala.us-east-1.emqxsl.com:8084/mqtt',
+    server: 'wss://w073fbd2.ala.us-east-1.emqxsl.com:8084/mqtt',
     options: {
-        username: 'MATI',
-        password: 'MATI',
+        username: 'malegre',
+        password: 'malegre',
         clientId: 'webClient-' + Math.random().toString(16).substr(2, 8)
-    }
+    },
+    topic: 'iot/temperatura'
 };
 
 const USER_DEVICES = {
