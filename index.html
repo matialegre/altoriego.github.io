@@ -82,6 +82,16 @@
     </div>
 
     <script src="app.js"></script>
+<!-- OneSignal Push Notifications -->
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "6bef7904-b10b-4066-9f8c-c7509babd004",
+    });
+  });
+</script>
 </body>
 </html>
 
