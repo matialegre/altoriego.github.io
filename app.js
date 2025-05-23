@@ -75,32 +75,25 @@ function initDashboard() {
     
     mqttClient.on('connect', () => {
         console.log('Conectado a MQTT');
-        document.getElementById('status').textContent = 'Estado: Conectado ✅';
+        document.getElementById('status').textContent = 'Estado: Conectado ';
         
-        // Suscribirse a tópicos
-        const deviceId = USER_DEVICES[currentUser];
-        mqttClient.subscribe(`devices/${deviceId}/data`);
-        mqttClient.subscribe('alto_riego/presence');
-        mqttClient.subscribe('alto_riego/chat');
-        
-        // Publicar presencia
-        mqttClient.publish('alto_riego/presence', JSON.stringify({
-            user: currentUser,
-            status: 'online',
-            timestamp: new Date().toISOString()
-        }));
+        // Suscribirse SOLO al topic de temperatura
+        mqttClient.subscribe(MQTT_CONFIG.topic);
+        // (Opcional) Publicar presencia si querés mantener la función
+        // mqttClient.publish('alto_riego/presence', JSON.stringify({
+        //     user: currentUser,
+        //     status: 'online',
+        //     timestamp: new Date().toISOString()
+        // }));
     });
 
     // Manejar mensajes MQTT
     mqttClient.on('message', (topic, message) => {
-        const data = JSON.parse(message.toString());
-        
-        if (topic.includes('data')) {
-            updateSensorData(data);
-        } else if (topic === 'alto_riego/presence') {
-            updateUserPresence(data);
-        } else if (topic === 'alto_riego/chat') {
-            updateChat(data);
+        if (topic === MQTT_CONFIG.topic) {
+            try {
+                const data = JSON.parse(message.toString());
+                updateSensorData(data);
+            } catch (e) { console.error('Error procesando mensaje MQTT:', e); }
         }
     });
 
